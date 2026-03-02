@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elite Cart - Premium Shopping</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="page animate">
+  <nav class="topbar">
+    <a href="/user-dashboard" class="topbar-brand">ELITE<span>CART</span></a>
+
+    <div class="search-vault" style="flex: 0.4; position: relative;">
+      <form action="/user/products" method="GET">
+        <input type="text" name="search" placeholder="Search products..."
+          style="width: 100%; padding: 1rem 2rem; border-radius: 16px; background: var(--surface-2); border: 1px solid var(--border); color: var(--text); outline: none; transition: var(--transition);">
+        <button type="submit"
+          style="position: absolute; right: 1.25rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--primary); cursor: pointer;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.3-4.3"></path>
+          </svg>
+        </button>
+      </form>
+    </div>
+
+    <div class="topbar-nav">
+      <a href="/user/profile"
+        style="color: var(--text-dim); font-weight: 700; font-size: 0.8rem; letter-spacing: 1px;">Profile</a>
+      <a href="/user/orders"
+        style="color: var(--text-dim); font-weight: 700; font-size: 0.8rem; letter-spacing: 1px;">Orders</a>
+      <a href="/user/cart" class="cart-anchor">
+        <div style="position: relative;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4H6z"></path>
+            <path d="M3 6h18"></path>
+            <path d="M16 10a4 4 0 01-8 0"></path>
+          </svg>
+          {% if session.get('cart') and session.get('cart')|length > 0 %}
+          <span
+            style="position: absolute; top: -8px; right: -8px; background: var(--primary); color: white; width: 18px; height: 18px; border-radius: 50%; font-size: 0.65rem; display: flex; align-items: center; justify-content: center; font-weight: 900; border: 2px solid var(--surface);">{{
+            session.get('cart')|length }}</span>
+          {% endif %}
+        </div>
+      </a>
+      <a href="/user-logout"
+        style="color: var(--danger); font-size: 0.7rem; font-weight: 900; letter-spacing: 2px; border: 1.5px solid var(--danger); padding: 0.5rem 1.25rem; border-radius: 10px; opacity: 0.8;">Logout</a>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Category Strip -->
+    <div style="background: var(--surface-2); border-bottom: 1px solid var(--border); padding: 1rem 0;">
+      <div class="main category-strip"
+        style="padding: 1rem 0; display: flex; gap: 2rem; overflow-x: auto; scrollbar-width: none; justify-content: flex-start; flex-wrap: nowrap; -webkit-overflow-scrolling: touch;">
+        {% for cat in ['Electronics', 'Fashion', 'Mobiles', 'Laptops', 'Accessories', 'Sports', 'Footwear', 'Kitchen',
+        'Toys', 'Furniture'] %}
+        <a href="/user/products?category={{ cat }}" class="cat-pill" style="flex: 0 0 auto; min-width: 100px;">
+          <div class="cat-icon">{{
+            {'Electronics':'📱','Fashion':'👗','Mobiles':'📲','Laptops':'💻','Accessories':'⌚','Sports':'🏸','Footwear':'👟','Kitchen':'🍳','Toys':'🧸','Furniture':'🛋️'}[cat]
+            }}</div>
+          <span class="cat-label">{{ cat }}</span>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Master Hero -->
+    <div class="hero-bespoke" style="padding: 1rem 0;">
+      <div
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('/static/uploads/hero-pattern.png'); opacity: 0.05;">
+      </div>
+      <div class="main" style="position: relative; z-index: 2; padding: 0; text-align: center;">
+        <h1 class="hero-title" style="font-size: clamp(2rem, 8vw, 3.5rem); letter-spacing: -2px;">Elite Cart</h1>
+        <p class="hero-subtitle" style="margin-inline: auto; margin-top: 1.5rem;">Explore our curated collection of
+          high-quality products.</p>
+        <div
+          style="display: flex; gap: 1.5rem; align-items: center; margin-top: 2rem; justify-content: center; flex-wrap: wrap;">
+          <a href="/user/products" class="btn-buy-bespoke"
+            style="padding: 1.5rem 5rem; font-size: 1rem; border-radius: 16px;">Shop Now</a>
+          <a href="/user/orders"
+            style="color: white; text-decoration: none; font-weight: 800; letter-spacing: 2px; font-size: 0.85rem; border-bottom: 2px solid var(--primary);">View
+            Orders &rarr;</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="main" style="padding-top: 3rem; padding-bottom: 3rem;">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      {% for category, message in messages %}
+      <div class="flash {{ category }}">
+        {{ message }}
+      </div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+
+      <!-- Sections -->
+      {% for section in sections %}
+      <div style="margin-bottom: 4rem;">
+        <div
+          style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">
+          <div>
+            <span
+              style="font-size: 0.75rem; font-weight: 800; color: var(--primary); letter-spacing: 4px; text-transform: uppercase;">Category</span>
+            <h2 style="font-size: 2.5rem; margin: 0.5rem 0 0; letter-spacing: -1.5px; color: var(--text);">{{
+              section.name }}
+            </h2>
+          </div>
+          <a href="/user/products?category={{ section.name }}"
+            style="color: var(--text-dim); text-decoration: none; font-weight: 800; font-size: 0.8rem; letter-spacing: 1.5px; padding: 0.75rem 2rem; border: 1px solid var(--border); border-radius: 12px; transition: var(--transition);"
+            onmouseover="this.style.borderColor='var(--primary)'; this.style.color='white'"
+            onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-dim)'">View All</a>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 3rem;">
+          {% for prod in section.products %}
+          <div class="product-card-bespoke" onclick="window.location.href='/user/product/{{ prod.product_id }}'">
+            <div class="card-img-wrap" style="height: 350px;">
+              {% if prod.is_bestseller %}
+              <div class="bestseller-tag">★ Bestseller</div>
+              {% endif %}
+              <img src="/static/uploads/product_images/{{ prod.image }}" alt="{{ prod.name }}">
+              <div class="card-overlay">
+                <span class="overlay-text">View Product</span>
+              </div>
+            </div>
+            <div class="card-content" style="padding: 2.5rem;">
+              <span style="font-size: 0.65rem; font-weight: 800; color: var(--secondary); letter-spacing: 2px;">{{
+                prod.category }}</span>
+              <h4
+                style="font-size: 1.2rem; color: var(--text); margin: 0.75rem 0 0.5rem; letter-spacing: -0.5px; line-height: 1.4; font-weight: 800; height: 3.4rem; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical;">
+                {{ prod.name }}</h4>
+
+              <!-- Star Rating -->
+              <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem;">
+                <div style="display: flex; color: #fbbf24; font-size: 0.8rem;">
+                  {% if prod.rating %}
+                  {% for _ in range(prod.rating|int) %}★{% endfor %}
+                  {% if prod.rating % 1 >= 0.5 %}★{% endif %}
+                  {% else %}
+                  ★★★★☆
+                  {% endif %}
+                </div>
+                <span style="font-size: 0.7rem; color: var(--text-dim); font-weight: 700;">({{ prod.rating or '4.5'
+                  }})</span>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 1.5rem; font-weight: 900; color: var(--text); letter-spacing: -1px;">₹{{
+                  "{:,.0f}".format(prod.price) }}</span>
+                <a href="/user/buy-now/{{ prod.product_id }}" class="card-add-btn" onclick="event.stopPropagation();">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <path d="M12 5v14M5 12h14"></path>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </main>
+
+  <style>
+    .search-vault input:focus {
+      border-color: var(--primary) !important;
+      box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.1);
+      background: var(--surface) !important;
+    }
+
+    .cat-pill {
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      transition: var(--transition);
+      opacity: 0.7;
+    }
+
+    .cat-pill:hover {
+      transform: translateY(-5px);
+      opacity: 1;
+    }
+
+    .cat-icon {
+      width: 70px;
+      height: 70px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      transition: var(--transition);
+    }
+
+    .cat-pill:hover .cat-icon {
+      border-color: var(--primary);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .cat-label {
+      font-size: 0.7rem;
+      font-weight: 900;
+      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .hero-bespoke {
+      background: radial-gradient(circle at 70% 30%, #1e293b 0%, #0f172a 100%);
+      padding: 4rem 0;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .hero-title {
+      font-size: clamp(3.5rem, 12vw, 7.5rem);
+      line-height: 0.85;
+      margin: 0;
+      letter-spacing: -5px;
+      font-weight: 900;
+      color: white;
+    }
+
+    .hero-subtitle {
+      max-width: 600px;
+      color: var(--text-dim);
+      font-size: 1.25rem;
+      margin-top: 2.5rem;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+
+    .product-card-bespoke {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .product-card-bespoke:hover {
+      border-color: var(--primary);
+      transform: translateY(-10px);
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
+    }
+
+    .card-img-wrap {
+      position: relative;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .card-img-wrap img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      transition: var(--transition);
+    }
+
+    .product-card-bespoke:hover .card-img-wrap {
+      padding: 3rem;
+    }
+
+    .card-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .product-card-bespoke:hover .card-overlay {
+      opacity: 1;
+    }
+
+    .overlay-text {
+      padding: 1rem 2rem;
+      border: 2px solid white;
+      color: white;
+      font-weight: 900;
+      font-size: 0.75rem;
+      letter-spacing: 5px;
+      border-radius: 12px;
+      background: var(--primary);
+    }
+
+    .card-add-btn {
+      width: 60px;
+      height: 60px;
+      background: var(--surface-2);
+      border: 2.5px solid var(--border);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+      transition: var(--transition);
+    }
+
+    .card-add-btn:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      transform: rotate(90deg);
+      color: white;
+    }
+
+    @media (max-width: 768px) {
+      .hero-bespoke {
+        padding: 4rem 0;
+      }
+
+      .hero-title {
+        font-size: 3rem;
+        letter-spacing: -2px;
+      }
+
+      .hero-subtitle {
+        font-size: 1rem;
+      }
+
+      .topbar {
+        padding: 1rem 2rem;
+      }
+
+      .topbar-brand {
+        font-size: 1.2rem;
+      }
+
+      .main {
+        padding-top: 4rem !important;
+      }
+
+      .grid-dash-resp {
+        grid-template-columns: 1fr !important;
+      }
+
+      .search-vault {
+        flex: 1 !important;
+        width: 100%;
+        margin: 1rem 0;
+      }
+
+      .category-strip {
+        gap: 1.5rem !important;
+        padding: 0 1rem !important;
+      }
+
+      .cat-icon {
+        width: 60px !important;
+        height: 60px !important;
+        font-size: 1.5rem !important;
+      }
+    }
+  </style>
+
+  <footer
+    style="padding: 2rem 1rem; background: #000; border-top: 1px solid var(--border); text-align: center; width: 100%; color: white; margin-top: 2rem;">
+    <div style="max-width: 1400px; margin: 0 auto;">
+      <div style="font-weight: 900; letter-spacing: 10px; font-size: 1.25rem; color: white; margin-bottom: 1.5rem;">
+        ELITE CART</div>
+      <p style="color: rgba(255,255,255,0.6); font-size: 0.75rem; letter-spacing: 4px; font-weight: 700;">&copy; 2026
+        ELITE CART. PATENT RIGHTS OWNED BY Sadhik.Shaik@25. ALL RIGHTS RESERVED.</p>
+    </div>
+  </footer>
+  <script>
+    // Auto-dismiss flash messages
+    setTimeout(() => {
+      const flashes = document.querySelectorAll('.flash');
+      flashes.forEach(f => {
+        f.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        f.style.opacity = '0';
+        f.style.transform = 'translateY(-20px)';
+        setTimeout(() => f.remove(), 600);
+      });
+    }, 4000); // 4 seconds
+  </script>
+</body>
+
+</html>
+
+</html>

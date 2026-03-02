@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personnel Registration - Elite Cart</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="auth-wrapper animate">
+    <div class="auth-card" style="border: none; box-shadow: 0 40px 100px rgba(0,0,0,0.4);">
+        <div style="text-align: center; margin-bottom: 1.25rem;">
+            <h1 style="font-size: 2.2rem; margin: 0; letter-spacing: -2px; color: var(--text); font-weight: 800;">Admin
+                Register</h1>
+            <p
+                style="color: var(--text-dim); margin-top: 0.75rem; font-size: 0.85rem; max-width: 400px; margin-inline: auto; line-height: 1.5;">
+                Create account. Super Admin approval required.</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash {{ 'error' if category == 'danger' or category == 'error' else 'success' }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="/admin-signup">
+            <div class="form-group" style="margin-bottom: 2rem;">
+                <label>Full Name</label>
+                <input type="text" name="name" placeholder="John Doe" required
+                    style="padding: 1.25rem; background: var(--surface-2); border-color: var(--border);">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 2rem;">
+                <label>Email Address</label>
+                <input type="email" name="email" placeholder="admin@example.com" required
+                    style="padding: 1.25rem; background: var(--surface-2); border-color: var(--border);">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 3.5rem;">
+                <label>Password</label>
+                <div style="position: relative; display: flex; align-items: center;">
+                    <input type="password" id="password" name="password" placeholder="••••••••" required
+                        style="padding: 1.25rem; padding-right: 3.5rem; background: var(--surface-2); border-color: var(--border);">
+                    <i class="fa-solid fa-eye" id="togglePassword"
+                        style="position: absolute; right: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--primary); opacity: 0.5; cursor: pointer; transition: var(--transition);"></i>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-buy-bespoke"
+                style="width: 100%; border: none; padding: 1.5rem; font-size: 1rem; letter-spacing: 2px;">Register</button>
+        </form>
+
+        <div style="margin-top: 4.5rem; text-align: center; border-top: 1px solid var(--border); padding-top: 2.5rem;">
+            <span style="color: var(--text-dim); font-size: 0.9rem;">Already have an account?</span>
+            <a href="/admin-login"
+                style="color: var(--primary); text-decoration: none; font-weight: 800; margin-left: 0.5rem; letter-spacing: 1px; border-bottom: 2px solid transparent; transition: var(--transition);"
+                onmouseover="this.style.borderBottomColor='var(--primary)'"
+                onmouseout="this.style.borderBottomColor='transparent'">Login</a>
+        </div>
+    </div>
+    <script>
+        // Show/Hide password toggle
+        const togglePassword = document.querySelector('#togglePassword');
+        const passwordInput = document.querySelector('#password');
+
+        if (togglePassword && passwordInput) {
+            togglePassword.addEventListener('click', function (e) {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+
+                this.style.opacity = type === 'text' ? '1' : '0.5';
+            });
+        }
+    </script>
+</body>
+
+</html>

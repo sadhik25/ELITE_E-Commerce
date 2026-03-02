@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Cart - Premium Shopping</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<div class="landing-wrapper">
+    <header style="margin-bottom: 6rem; text-align: center;">
+        <div
+            style="font-weight: 900; letter-spacing: 12px; font-size: 1.5rem; color: var(--primary); margin-bottom: 2rem; text-transform: uppercase;">
+            Elite Cart</div>
+        <h1
+            style="font-size: clamp(3rem, 8vw, 5rem); line-height: 1.1; margin: 0 0 2rem; color: var(--text); font-weight: 800; letter-spacing: -2px;">
+            Premium Products for You</h1>
+        <p
+            style="margin: 0 auto 3rem; color: var(--text-dim); max-width: 800px; font-size: 1.25rem; line-height: 1.6; font-weight: 500;">
+            Discover our carefully selected collection of high-quality products today.</p>
+
+        <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-bottom: 10rem;">
+            <a href="/user-login" class="btn-buy-bespoke"
+                style="padding: 1.75rem 6rem; text-decoration: none; font-size: 1.1rem; border: none; box-shadow: 0 20px 40px rgba(var(--primary-rgb), 0.3);">User
+                Login</a>
+            <a href="/admin-login" class="btn-buy-bespoke secondary"
+                style="padding: 1.75rem 5rem; text-decoration: none; font-size: 1.1rem; border-style: dashed; background: rgba(255,255,255,0.05);">Admin
+                Login</a>
+        </div>
+    </header>
+
+    <section class="grid-dash-resp" style="gap: 3rem; width: 100%; max-width: 1300px; margin: 0 auto;">
+        <div class="card-bespoke feature-card">
+            <div class="feature-icon">💠</div>
+            <h3 class="feature-title">Global Logistics</h3>
+            <p class="feature-text">Precision-led delivery spanning across international sanctuaries within 48 hours.
+            </p>
+        </div>
+
+        <div class="card-bespoke feature-card active">
+            <div class="feature-icon">💎</div>
+            <h3 class="feature-title">Elite Curation</h3>
+            <p class="feature-text">Every single piece is hand-selected by our master curators for absolute perfection.
+            </p>
+        </div>
+
+        <div class="card-bespoke feature-card">
+            <div class="feature-icon">🔐</div>
+            <h3 class="feature-title">Vault Security</h3>
+            <p class="feature-text">Advanced encryption protocols ensuring your acquisitions remain private and
+                protected.</p>
+        </div>
+    </section>
+
+</div>
+
+<footer
+    style="padding: 8rem 1rem; text-align: center; border-top: 1px solid var(--border); width: 100%; background: #000; color: #fff; margin-top: 15rem;">
+    <p style="font-size: 0.8rem; font-weight: 800; color: rgba(255,255,255,0.6); letter-spacing: 6px; margin: 0;">
+        &copy; 2026 ELITE CART. PATENT RIGHTS OWNED BY Sadhik.Shaik@25. ALL RIGHTS RESERVED.</p>
+</footer>
+
+<style>
+    .landing-wrapper {
+        padding: 2rem 2rem 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background: radial-gradient(circle at top, rgba(var(--primary-rgb), 0.1) 0%, transparent 50%);
+        text-align: center;
+    }
+
+    .feature-card {
+        padding: 4rem 3rem;
+        text-align: center;
+        transition: var(--transition);
+        background: var(--surface);
+        border: 1px solid var(--border);
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+        border-color: var(--primary);
+        background: var(--surface-2);
+    }
+
+    .feature-card.active {
+        border-color: var(--primary);
+        background: rgba(var(--primary-rgb), 0.05);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    }
+
+    .feature-icon {
+        font-size: 4.5rem;
+        margin-bottom: 2.5rem;
+        transition: var(--transition);
+    }
+
+    .feature-card:hover .feature-icon {
+        transform: scale(1.1);
+        filter: drop-shadow(0 0 20px var(--primary));
+    }
+
+    .feature-title {
+        font-weight: 800;
+        color: var(--text);
+        letter-spacing: 2px;
+        margin-bottom: 1.5rem;
+        text-transform: uppercase;
+        font-size: 1.1rem;
+    }
+
+    .feature-text {
+        color: var(--text-dim);
+        font-size: 0.95rem;
+        line-height: 1.8;
+        margin: 0;
+    }
+
+    @media (max-width: 768px) {
+        .landing-wrapper {
+            padding: 3rem 1.5rem 0;
+        }
+
+        header h1 {
+            font-size: 3rem !important;
+            letter-spacing: -2px !important;
+        }
+
+        .btn-buy-bespoke {
+            width: 100%;
+            padding: 1.5rem 2rem !important;
+        }
+
+        .grid-dash-resp {
+            grid-template-columns: 1fr !important;
+        }
+    }
+</style>
+</body>
+
+</html>

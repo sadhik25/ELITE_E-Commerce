@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Profile - SmartCart</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="page">
+    <div class="topbar">
+        <a href="/admin-dashboard" class="topbar-brand">Smart<span>Cart</span> Admin</a>
+        <div class="topbar-nav">
+            <a href="/admin/item-list">Items</a>
+            <a href="/admin/add-item">Add Item</a>
+            {% if session.get('is_superadmin') %}
+            <a href="/admin/manage-admins">Manage Admins</a>
+            {% endif %}
+            <a href="/admin-logout" class="logout">Logout</a>
+        </div>
+    </div>
+
+    <main class="main" style="padding: 4rem 2rem;">
+        <div class="section-head" style="margin-bottom: 3rem; text-align: center;">
+            <div
+                style="font-weight: 800; letter-spacing: 6px; font-size: 0.75rem; color: var(--primary); margin-bottom: 1rem; text-transform: uppercase;">
+                Admin Profile</div>
+            <h1 class="section-title" style="font-size: 3rem; margin: 0; letter-spacing: -2px; color: var(--text);">
+                Manage
+                Account</h1>
+            <p style="color: var(--text-dim); margin-top: 1rem; font-size: 0.95rem; font-weight: 600;">Update your
+                personal information and security settings.</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+        <div class="flash {{ category }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endwith %}
+
+        <div class="card-bespoke"
+            style="max-width: 800px; padding: 4rem; margin: 0 auto; border: 1px solid var(--border);">
+            <div
+                style="display: flex; align-items: center; gap: 3rem; margin-bottom: 4rem; flex-wrap: wrap; justify-content: center; text-align: center;">
+                <div style="position: relative;">
+                    {% if admin.profile_image %}
+                    <img src="/static/uploads/admin_profiles/{{ admin.profile_image }}"
+                        style="width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary); padding: 5px; background: var(--surface-2); box-shadow: 0 0 30px rgba(var(--primary-rgb), 0.2);">
+                    {% else %}
+                    <div
+                        style="width: 140px; height: 140px; border-radius: 50%; background: var(--surface-2); border: 2px dashed var(--border); display: flex; align-items: center; justify-content: center; font-size: 4rem; filter: grayscale(1); opacity: 0.5;">
+                        👤
+                    </div>
+                    {% endif %}
+                </div>
+                <div style="flex: 1; min-width: 250px;">
+                    <h2
+                        style="font-size: 2.25rem; font-weight: 800; color: white; margin: 0 0 0.5rem; letter-spacing: -1px;">
+                        {{ admin.name }}</h2>
+                    <p style="color: var(--text-dim); font-size: 1rem; font-family: monospace; margin-bottom: 1.5rem;">
+                        {{ admin.email }}</p>
+                    {% if admin.is_superadmin %}
+                    <span class="role-badge super">SUPER ADMIN</span>
+                    {% else %}
+                    <span class="role-badge">ADMIN</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <form method="POST" action="/admin/profile" enctype="multipart/form-data"
+                style="border-top: 1px solid var(--border); padding-top: 4rem;">
+                <div class="grid-dash-resp" style="gap: 2rem; margin-bottom: 2rem;">
+                    <div class="form-group" style="margin: 0;">
+                        <label>Name</label>
+                        <input type="text" name="name" value="{{ admin.name }}" required>
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label>Email</label>
+                        <input type="email" name="email" value="{{ admin.email }}" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>New Password</label>
+                    <input type="password" name="password" placeholder="Leave blank to keep current password">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 3.5rem;">
+                    <label>Profile Picture</label>
+                    <div class="file-input-wrapper">
+                        <input type="file" name="profile_image" accept="image/*">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                    <button type="submit" class="btn-buy-bespoke"
+                        style="flex: 1; padding: 1.25rem; border: none; font-size: 0.9rem;">SAVE CHANGES</button>
+                    <a href="/admin-dashboard" class="btn-buy-bespoke secondary"
+                        style="flex: 1; text-align: center; text-decoration: none; padding: 1.25rem; border-radius: 14px; font-size: 0.9rem; background: var(--surface-2);">CANCEL</a>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <style>
+        .role-badge {
+            display: inline-block;
+            background: var(--surface-2);
+            color: var(--text-dim);
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 0.6rem 1.5rem;
+            border-radius: 99px;
+            letter-spacing: 2px;
+            border: 1px solid var(--border);
+        }
+
+        .role-badge.super {
+            background: rgba(var(--primary-rgb), 0.1);
+            color: var(--primary);
+            border-color: rgba(var(--primary-rgb), 0.3);
+        }
+
+        .file-input-wrapper {
+            background: var(--surface-2);
+            border: 1px dashed var(--border);
+            padding: 1rem;
+            border-radius: 12px;
+            transition: var(--transition);
+        }
+
+        .file-input-wrapper:hover {
+            border-color: var(--primary);
+            background: rgba(var(--primary-rgb), 0.05);
+        }
+
+        input[type="file"] {
+            width: 100%;
+            color: var(--text-dim);
+            font-size: 0.85rem;
+        }
+    </style>
+</body>
+
+</html>
+
+</html>

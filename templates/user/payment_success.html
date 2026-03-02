@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Successful - SmartCart</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="auth-wrapper animate">
+    <div class="auth-card payment-success-card"
+        style="padding: 2rem 1.5rem; text-align: center; border: none; box-shadow: 0 50px 120px rgba(0,0,0,0.5);">
+        <div class="success-indicator">
+            <div class="indicator-inner">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <div class="indicator-pulse"></div>
+        </div>
+
+        <div style="margin-bottom: 2rem;">
+            <span
+                style="font-size: 0.75rem; font-weight: 800; color: var(--success); letter-spacing: 6px; text-transform: uppercase;">Success</span>
+            <h1
+                style="font-size: 3.5rem; margin: 1.5rem 0 0.5rem; letter-spacing: -2px; color: var(--text); font-weight: 900;">
+                Payment Successful</h1>
+            <p
+                style="color: var(--text-dim); font-size: 1.1rem; max-width: 500px; margin-inline: auto; font-weight: 500; line-height: 1.6;">
+                Your order has been successfully processed and confirmed.</p>
+        </div>
+
+        <div class="manifest-card">
+            <div class="manifest-row">
+                <span class="manifest-label">ORDER NUMBER</span>
+                <span class="manifest-value primary">#{{ order_id }}</span>
+            </div>
+            <div class="manifest-row" style="border: none; padding: 0;">
+                <span class="manifest-label">PAYMENT ID</span>
+                <span class="manifest-value">{{ payment_id }}</span>
+            </div>
+        </div>
+
+        <div class="success-actions">
+            <a href="/user/download-invoice/{{ order_id }}" class="btn-buy-bespoke"
+                style="padding: 1.5rem; text-decoration: none; border-radius: 16px; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 1rem; font-weight: 900;">
+                <i class="fa-solid fa-file-invoice"></i> DOWNLOAD INVOICE
+            </a>
+            <a href="/user/products" class="btn-buy-bespoke secondary"
+                style="padding: 1.5rem; text-decoration: none; border-radius: 16px; font-size: 0.9rem; background: var(--surface-2); border-style: dashed; font-weight: 900;">
+                CONTINUE SHOPPING
+            </a>
+        </div>
+
+        <div
+            style="margin-top: 2rem; padding: 1.5rem; background: rgba(16, 185, 129, 0.05); border-radius: 20px; border: 1px dashed var(--success);">
+            <div
+                style="display: flex; align-items: center; justify-content: center; gap: 1rem; color: var(--success); margin-bottom: 0.5rem;">
+                <i class="fa-solid fa-envelope-circle-check" style="font-size: 1.2rem;"></i>
+                <span style="font-weight: 800; letter-spacing: 1px; font-size: 0.9rem;">EMAIL DISPATCHED</span>
+            </div>
+            <p style="color: var(--success); font-weight: 700; font-size: 0.85rem; margin: 0;">A confirmation email has
+                been sent to your registered mail address.</p>
+        </div>
+    </div>
+
+    <style>
+        .success-indicator {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+        }
+
+        .indicator-inner {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+            background: var(--success);
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            transform: rotate(15deg);
+            box-shadow: 0 20px 40px rgba(var(--success-rgb), 0.3);
+        }
+
+        .indicator-inner i {
+            transform: rotate(-15deg);
+        }
+
+        .indicator-pulse {
+            position: absolute;
+            inset: -10px;
+            background: var(--success);
+            border-radius: 44px;
+            opacity: 0.2;
+            transform: rotate(15deg);
+            animation: pulse-elite 2s infinite ease-out;
+        }
+
+        @keyframes pulse-elite {
+            0% {
+                transform: scale(1) rotate(15deg);
+                opacity: 0.2;
+            }
+
+            100% {
+                transform: scale(1.4) rotate(15deg);
+                opacity: 0;
+            }
+        }
+
+        .manifest-card {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 28px;
+            border: 1.5px solid var(--border);
+            margin-bottom: 3rem;
+            text-align: left;
+        }
+
+        .manifest-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1.5px solid var(--border);
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .manifest-label {
+            font-size: 0.7rem;
+            font-weight: 900;
+            color: var(--text-dim);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .manifest-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        .manifest-value.primary {
+            color: var(--primary);
+            font-weight: 900;
+            font-size: 1.25rem;
+        }
+
+        .payment-success-card {
+            max-width: 500px;
+        }
+
+        .success-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .payment-success-card {
+                padding: 4rem 2rem !important;
+            }
+
+            .success-actions {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2.5rem !important;
+            }
+
+            .manifest-card {
+                padding: 2rem !important;
+                margin-bottom: 3rem !important;
+            }
+        }
+    </style>
+</body>
+
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - SmartCart</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="animate">
+  <nav class="topbar">
+    <a href="/admin-dashboard" class="topbar-brand">ELITE<span>CART</span></a>
+    <div class="topbar-nav">
+      <a href="/admin/item-list">Items</a>
+      <a href="/admin/add-item">Add Item</a>
+      {% if session.get('is_superadmin') %}
+      <a href="/admin/manage-admins">Manage Admins</a>
+      {% endif %}
+      <a href="/admin-logout" style="color: var(--danger); opacity: 0.8;">Logout</a>
+    </div>
+  </nav>
+
+  <main class="main">
+    <div class="section-head" style="margin-bottom: 3rem; text-align: center;">
+      <div
+        style="font-weight: 800; letter-spacing: 6px; font-size: 0.75rem; color: var(--primary); margin-bottom: 1rem; text-transform: uppercase;">
+        Admin Dashboard</div>
+      <h1 class="section-title" style="font-size: 3rem; margin: 0; letter-spacing: -2px; color: var(--text);">Overview
+        Dashboard</h1>
+      <p style="color: var(--text-dim); margin-top: 1rem; font-size: 0.95rem; font-weight: 600;">ADMIN: <span
+          style="color: var(--primary);">{{ admin_name }}</span></p>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+    <div class="flash {{ 'error' if category == 'danger' or category == 'error' else 'success' }}">
+      {{ message }}
+    </div>
+    {% endfor %}
+    {% endwith %}
+
+    <!-- INCOME TRACKING SECTION -->
+    <div class="grid-dash-resp" style="gap: 2.5rem; margin-bottom: 5rem;">
+      <!-- Main Stats Card -->
+      <div class="card-bespoke"
+        style="padding: 3rem; border-top: 4px solid var(--primary); background: linear-gradient(180deg, var(--surface-2) 0%, var(--surface) 100%);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem;">
+          <div>
+            <div class="card-cat" style="margin-bottom: 1rem;">PLATFORM REVENUE</div>
+            {% if is_superadmin %}
+            <h2
+              style="font-size: 3rem; font-weight: 800; color: var(--text); margin-bottom: 0.5rem; letter-spacing: -1.5px;">
+              ₹{{ "{:,.2f}".format(total_income) }}</h2>
+            <p style="font-size: 0.85rem; color: var(--text-dim); line-height: 1.6;">Total platform revenue from all
+              sales.</p>
+            {% else %}
+            <h2
+              style="font-size: 3rem; font-weight: 800; color: var(--text); margin-bottom: 0.5rem; letter-spacing: -1.5px;">
+              ₹{{ "{:,.2f}".format(personal_income) }}</h2>
+            <p style="font-size: 0.85rem; color: var(--text-dim); line-height: 1.6;">Revenue generated from your sales.
+            </p>
+            {% endif %}
+          </div>
+          <div style="font-size: 3.5rem; opacity: 0.8; filter: drop-shadow(0 0 15px var(--primary));">💰</div>
+        </div>
+      </div>
+
+      <!-- Products Sold Card -->
+      <div class="card-bespoke"
+        style="padding: 3rem; border-top: 4px solid var(--success); background: linear-gradient(180deg, var(--surface-2) 0%, var(--surface) 100%);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem;">
+          <div>
+            <div class="card-cat" style="margin-bottom: 1rem;">PRODUCTS SOLD</div>
+            {% if is_superadmin %}
+            <h2
+              style="font-size: 3rem; font-weight: 800; color: var(--text); margin-bottom: 0.5rem; letter-spacing: -1.5px;">
+              {{ total_products_sold or 0 }}</h2>
+            <p style="font-size: 0.85rem; color: var(--text-dim); line-height: 1.6;">Total number of products sold on
+              the platform.</p>
+            {% else %}
+            <h2
+              style="font-size: 3rem; font-weight: 800; color: var(--text); margin-bottom: 0.5rem; letter-spacing: -1.5px;">
+              {{ personal_products_sold or 0 }}</h2>
+            <p style="font-size: 0.85rem; color: var(--text-dim); line-height: 1.6;">Total units sold from your account.
+            </p>
+            {% endif %}
+          </div>
+          <div style="font-size: 3.5rem; opacity: 0.8; filter: drop-shadow(0 0 15px var(--success));">📦</div>
+        </div>
+      </div>
+
+      {% if is_superadmin %}
+      <!-- Admin Breakdown Card -->
+      <div class="card-bespoke"
+        style="padding: 3rem; border-top: 4px solid var(--secondary); background: var(--surface-2);">
+        <div class="card-cat" style="margin-bottom: 2rem;">ADMIN PERFORMANCE BREAKDOWN</div>
+        <div style="max-height: 250px; overflow-y: auto; padding-right: 1.5rem;" class="custom-scroll">
+          {% for stat in admin_stats %}
+          <div
+            style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 0; border-bottom: 1px solid var(--border);">
+            <div>
+              <div style="font-weight: 800; color: var(--text); font-size: 1.1rem; margin-bottom: 0.25rem;">{{ stat.name
+                }}</div>
+              <div style="font-size: 0.65rem; color: var(--text-dim); font-weight: 800; letter-spacing: 1px;">{{
+                stat.admin_products_sold or 0 }} UNITS DISPATCHED</div>
+            </div>
+            <div style="font-weight: 800; color: var(--primary); font-size: 1.1rem;">₹{{
+              "{:,.0f}".format(stat.admin_income or 0) }}</div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="grid-dash-resp" style="gap: 2.5rem; margin-top: 5rem;">
+      <a href="/admin/item-list" class="card-bespoke dash-link">
+        <div class="dash-icon">📑</div>
+        <div class="card-cat">Archive</div>
+        <div class="card-name" style="margin: 0.5rem 0 1rem; font-size: 1.5rem;">Inventory</div>
+        <p style="color: var(--text-dim); font-size: 0.9rem; margin: 0;">Review and manage the current elite catalog.
+        </p>
+      </a>
+
+      <a href="/admin/add-item" class="card-bespoke dash-link active">
+        <div class="dash-icon">✨</div>
+        <div class="card-cat">Forge</div>
+        <div class="card-name" style="margin: 0.5rem 0 1rem; font-size: 1.5rem;">New Manifest</div>
+        <p style="color: var(--text-dim); font-size: 0.9rem; margin: 0;">Enroll new products into the global collective.
+        </p>
+      </a>
+
+      {% if is_superadmin %}
+      <a href="/admin/manage-admins" class="card-bespoke dash-link">
+        <div class="dash-icon">🛡️</div>
+        <div class="card-cat">Protocol</div>
+        <div class="card-name" style="margin: 0.5rem 0 1rem; font-size: 1.5rem;">Security Control</div>
+        <p style="color: var(--text-dim); font-size: 0.9rem; margin: 0;">Authorize or revoke administrator credentials.
+        </p>
+      </a>
+      {% endif %}
+
+      <a href="/admin/profile" class="card-bespoke dash-link">
+        <div class="dash-icon">👤</div>
+        <div class="card-cat">Identity</div>
+        <div class="card-name" style="margin: 0.5rem 0 1rem; font-size: 1.5rem;">Admin Profile</div>
+        <p style="color: var(--text-dim); font-size: 0.9rem; margin: 0;">View and manage your terminal credentials.</p>
+      </a>
+    </div>
+  </main>
+
+  <style>
+    .dash-link {
+      text-decoration: none;
+      padding: 4rem 2rem;
+      text-align: center;
+      transition: var(--transition);
+      border: 2px solid var(--border);
+    }
+
+    .dash-link:hover {
+      border-color: var(--primary);
+      transform: translateY(-5px);
+      background: var(--surface-2);
+    }
+
+    .dash-link.active {
+      border-color: var(--primary);
+      background: rgba(244, 63, 94, 0.05);
+    }
+
+    .dash-icon {
+      font-size: 4rem;
+      margin-bottom: 2rem;
+      transition: var(--transition);
+    }
+
+    .dash-link:hover .dash-icon {
+      transform: scale(1.1);
+      filter: drop-shadow(0 0 20px var(--primary));
+    }
+
+    @media (max-width: 768px) {
+      .topbar {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .topbar-nav {
+        width: 100%;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        background: var(--surface-2);
+        padding: 0.75rem;
+        border-radius: 12px;
+      }
+
+      .section-title {
+        font-size: 2rem !important;
+      }
+
+      .card-bespoke {
+        padding: 2rem !important;
+      }
+
+      .card-bespoke h2 {
+        font-size: 2.2rem !important;
+      }
+
+      .dash-link {
+        padding: 2.5rem 1rem !important;
+      }
+
+      .dash-icon {
+        font-size: 3rem !important;
+        margin-bottom: 1.5rem !important;
+      }
+    }
+
+    .custom-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 99px;
+    }
+
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+      background: var(--primary);
+    }
+  </style>
+  <script>
+    // Auto-dismiss flash messages
+    setTimeout(() => {
+      const flashes = document.querySelectorAll('.flash');
+      flashes.forEach(f => {
+        f.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        f.style.opacity = '0';
+        f.style.transform = 'translateY(-20px)';
+        setTimeout(() => f.remove(), 600);
+      });
+    }, 4000);
+  </script>
+</body>
+
+</html>

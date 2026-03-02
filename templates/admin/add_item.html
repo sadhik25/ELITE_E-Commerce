@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product - SmartCart Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="page">
+    <nav class="topbar">
+        <a href="/admin-dashboard" class="topbar-brand">ELITE<span>CART</span></a>
+        <div class="topbar-nav">
+            <a href="/admin/item-list">Inventory</a>
+            <a href="/admin/add-item" style="color: var(--primary); font-weight: 800;">Add Item</a>
+            {% if session.get('is_superadmin') %}
+            <a href="/admin/manage-admins">Manage Admins</a>
+            {% endif %}
+            <a href="/admin-logout" style="color: var(--danger); opacity: 0.8;">Logout</a>
+        </div>
+    </nav>
+
+    <main class="main">
+        <div class="section-head" style="margin-bottom: 5rem; text-align: center;">
+            <div
+                style="font-weight: 800; letter-spacing: 6px; font-size: 0.75rem; color: var(--primary-light); margin-bottom: 1rem; text-transform: uppercase;">
+                INVENTORY DISPATCH</div>
+            <h1 class="section-title" style="font-size: 3rem; margin: 0; letter-spacing: -2px; color: var(--text);">
+                Manifest
+                Creation</h1>
+            <p style="color: var(--text-dim); margin-top: 1rem; font-size: 0.95rem; font-weight: 600;">Broadcast a new
+                treasure across the global elite network</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+        <div class="flash {{ category }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endwith %}
+
+        <div class="card-bespoke"
+            style="max-width: 1000px; margin: 0 auto; padding: 5rem; border: 1px solid var(--border);">
+            <form method="POST" action="/admin/add-item" enctype="multipart/form-data">
+                <div class="form-group" style="margin-bottom: 3.5rem;">
+                    <label>MANIFEST IDENTIFIER (PRODUCT NAME)</label>
+                    <input type="text" name="name" placeholder="e.g. SONIC WH-5000 ELITE" required
+                        style="padding: 1.5rem; font-size: 1.1rem; border-radius: 16px;">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 3.5rem;">
+                    <label>DETAILED SPECIFICATIONS (DESCRIPTION)</label>
+                    <textarea name="description" rows="5"
+                        placeholder="Enunciate the premium characteristics and nuances..." required
+                        style="padding: 1.5rem; border-radius: 16px; line-height: 1.6;"></textarea>
+                </div>
+
+                <div class="grid-dash-resp" style="gap: 3rem; margin-bottom: 4rem;">
+                    <div class="form-group" style="margin: 0;">
+                        <label>ASSET SECTOR (CATEGORY)</label>
+                        <select name="category" required
+                            style="padding: 1.25rem; border-radius: 14px; background: var(--surface-2); color: white;">
+                            <option value="">Select Sector</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Fashion">Fashion</option>
+                            <option value="Sports">Sports</option>
+                            <option value="Footwear">Footwear</option>
+                            <option value="Kitchen">Kitchen</option>
+                            <option value="Toys">Toys</option>
+                            <option value="Furniture">Furniture</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label>VALUATION (PRICE INR)</label>
+                        <input type="number" step="0.01" name="price" placeholder="0.00" required
+                            style="padding: 1.25rem; border-radius: 14px; background: var(--surface-2);">
+                    </div>
+                </div>
+
+                <div class="form-group"
+                    style="margin-bottom: 4.5rem; background: var(--surface-2); padding: 2.5rem; border-radius: 20px; border: 1px dashed var(--border);">
+                    <label
+                        style="margin-bottom: 2rem; display: block; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">VISUAL
+                        MANIFESTS (MULTIPLE ANGLES)</label>
+                    <div class="grid-dash-resp" style="gap: 2rem;">
+                        <div class="upload-zone">
+                            <span class="upload-label">PRIMARY VIEW</span>
+                            <div class="file-custom">
+                                <input type="file" name="image" accept="image/*" required>
+                                <div class="file-overlay">SELECT IMAGE</div>
+                            </div>
+                        </div>
+                        <div class="upload-zone">
+                            <span class="upload-label">LATERAL VIEW</span>
+                            <div class="file-custom">
+                                <input type="file" name="image2" accept="image/*">
+                                <div class="file-overlay">SELECT IMAGE</div>
+                            </div>
+                        </div>
+                        <div class="upload-zone">
+                            <span class="upload-label">MACRO VIEW</span>
+                            <div class="file-custom">
+                                <input type="file" name="image3" accept="image/*">
+                                <div class="file-overlay">SELECT IMAGE</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions-resp">
+                    <div class="status-toggle">
+                        <label class="switch">
+                            <input type="checkbox" name="is_bestseller">
+                            <span class="slider round"></span>
+                        </label>
+                        <span class="status-label">ELEVATE TO BESTSELLER STATUS</span>
+                    </div>
+                    <div class="btn-group">
+                        <a href="/admin/item-list" class="btn-buy-bespoke secondary abort-btn">ABORT</a>
+                        <button type="submit" class="btn-buy-bespoke publish-btn">PUBLISH MANIFEST</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <style>
+        .form-actions-resp {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            padding-top: 3rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .status-toggle {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .status-label {
+            font-weight: 800;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            letter-spacing: 1px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .abort-btn {
+            width: auto;
+            padding: 1.25rem 3rem;
+            text-decoration: none;
+            border-radius: 14px;
+        }
+
+        .publish-btn {
+            width: auto;
+            padding: 1.25rem 5rem;
+            border: none;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .main {
+                padding: 2rem 1.5rem !important;
+            }
+
+            .section-title {
+                font-size: 2rem !important;
+            }
+
+            .card-bespoke {
+                padding: 2.5rem 1.5rem !important;
+            }
+
+            .form-actions-resp {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 2.5rem;
+            }
+
+            .btn-group {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .btn-buy-bespoke {
+                width: 100% !important;
+                padding: 1.5rem !important;
+            }
+
+            .grid-dash-resp {
+                gap: 2rem !important;
+            }
+        }
+
+        .upload-zone {
+            text-align: center;
+        }
+
+        .upload-label {
+            display: block;
+            font-size: 0.65rem;
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+        }
+
+        .file-custom {
+            position: relative;
+            height: 60px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .file-custom:hover {
+            border-color: var(--primary);
+            background: rgba(var(--primary-rgb), 0.05);
+        }
+
+        .file-custom input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .file-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--text-dim);
+            letter-spacing: 1px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--border);
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+        }
+
+        input:checked+.slider {
+            background-color: var(--primary);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(26px);
+        }
+
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+    </style>
+</body>
+
+</html>
+
+</html>

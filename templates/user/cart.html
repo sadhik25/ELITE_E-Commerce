@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart | SmartCart</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="page">
+    <div class="topbar">
+        <a href="/user-dashboard" class="topbar-brand">Smart<span>Cart</span></a>
+
+        <div class="topbar-nav">
+            <a href="/user/products">Continue Discovery</a>
+            <a href="/user-logout" class="logout" style="color: var(--danger);">Logout</a>
+        </div>
+    </div>
+
+    <main class="main" style="max-width: 1400px; padding: 2rem 1.5rem;">
+        <div style="display: grid; grid-template-columns: 1fr 400px; gap: 6rem; align-items: start;">
+
+            <!-- Left: Curated Collective -->
+            <section>
+                <div style="margin-bottom: 2rem;">
+                    <span
+                        style="font-size: 0.75rem; font-weight: 800; color: var(--primary); letter-spacing: 5px; text-transform: uppercase;">Order
+                        Summary</span>
+                    <h1 style="font-size: 2.5rem; margin: 0.5rem 0 0; letter-spacing: -1.5px; color: var(--text);">Your
+                        Cart</h1>
+                </div>
+
+                {% if not cart %}
+                <div class="card-bespoke"
+                    style="padding: 12rem 2rem; text-align: center; border-style: dashed; background: transparent;">
+                    <div style="font-size: 6rem; line-height: 1; margin-bottom: 3rem; opacity: 0.2;">🛒</div>
+                    <h3 style="font-size: 2.5rem; color: var(--text); letter-spacing: -1.5px; margin-bottom: 1.5rem;">
+                        Cart
+                        Empty</h3>
+                    <p style="color: var(--text-dim); font-size: 1.1rem; max-width: 450px; margin-inline: auto;">
+                        Your shopping cart is currently empty. Start adding some products!</p>
+                    <a href="/user/products" class="btn-buy-bespoke"
+                        style="display: inline-block; text-decoration: none; padding: 1.5rem 6rem; margin-top: 4rem; border-radius: 16px;">Shop
+                        Now</a>
+                </div>
+                {% else %}
+                <div style="display: flex; flex-direction: column; gap: 2.5rem;">
+                    {% for pid, item in cart.items() %}
+                    <div class="card-bespoke"
+                        style="display: grid; grid-template-columns: 180px 1fr 180px; gap: 3rem; align-items: center; padding: 2.5rem; background: var(--surface-2); border: 1px solid var(--border);">
+                        <div
+                            style="height: 180px; background: white; border-radius: 20px; padding: 1.5rem; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                            <img src="/static/uploads/product_images/{{ item.image }}"
+                                style="max-width: 100%; max-height: 100%; object-fit: contain; transition: var(--transition);">
+                        </div>
+
+                        <div>
+                            <span
+                                style="font-size: 0.65rem; font-weight: 800; color: var(--secondary); letter-spacing: 2px;">{{
+                                item.category }}</span>
+                            <h3
+                                style="font-size: 1.6rem; margin: 0.75rem 0; color: var(--text); letter-spacing: -0.5px;">
+                                {{
+                                item.name }}</h3>
+                            <div
+                                style="font-size: 1.4rem; font-weight: 800; color: var(--text-dim); margin-bottom: 2rem;">
+                                ₹{{ "{:,.0f}".format(item.price) }}</div>
+
+                            <div style="display: flex; align-items: center; gap: 3rem;">
+                                <div
+                                    style="display: flex; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; height: 50px;">
+                                    <a href="/user/cart/decrease/{{ pid }}" class="qty-btn"
+                                        style="border-right: 1px solid var(--border); color: var(--text);">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="3">
+                                            <path d="M5 12h14"></path>
+                                        </svg>
+                                    </a>
+                                    <span
+                                        style="padding: 0 1.5rem; font-weight: 900; min-width: 60px; text-align: center; color: var(--text);">{{
+                                        item.quantity }}</span>
+                                    <a href="/user/cart/increase/{{ pid }}" class="qty-btn"
+                                        style="border-left: 1px solid var(--border); color: var(--text);">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="3">
+                                            <path d="M12 5v14M5 12h14"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                                <a href="/user/cart/remove/{{ pid }}"
+                                    style="color: var(--danger); font-size: 0.75rem; font-weight: 900; text-decoration: none; letter-spacing: 2px; border-bottom: 2px solid transparent; transition: var(--transition);"
+                                    onmouseover="this.style.borderBottomColor='var(--danger)'"
+                                    onmouseout="this.style.borderBottomColor='transparent'">Remove</a>
+                            </div>
+                        </div>
+
+                        <div style="text-align: right;">
+                            <p
+                                style="font-size: 0.65rem; color: var(--text-dim); font-weight: 900; letter-spacing: 2px; margin-bottom: 0.5rem; text-transform: uppercase;">
+                                Item Subtotal</p>
+                            <p style="font-size: 1.8rem; font-weight: 900; color: var(--text); letter-spacing: -1px;">
+                                ₹{{
+                                "{:,.0f}".format(item.price * item.quantity) }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </section>
+
+            <!-- Right: Curation Summary -->
+            {% if cart %}
+            <aside style="position: sticky; top: 10rem;">
+                <div class="card-bespoke"
+                    style="padding: 3rem; background: var(--surface); border: 1px solid var(--border); box-shadow: 0 30px 60px rgba(0,0,0,0.1);">
+                    <h3
+                        style="font-size: 0.9rem; font-weight: 900; color: var(--text); letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 2.5rem; border-bottom: 2px solid var(--primary); display: inline-block; padding-bottom: 0.5rem;">
+                        Order Summary</h3>
+
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1.25rem;">
+                        <span style="color: var(--text-dim); font-weight: 600;">Subtotal</span>
+                        <span style="color: var(--text); font-weight: 800;">₹{{ "{:,.0f}".format(grand_total) }}</span>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1.25rem;">
+                        <span style="color: var(--text-dim); font-weight: 600;">Shipping</span>
+                        <span style="color: var(--success); font-weight: 800; letter-spacing: 1px;">FREE</span>
+                    </div>
+
+                    <div
+                        style="display: flex; justify-content: space-between; margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 1px dashed var(--border);">
+                        <span style="color: var(--text-dim); font-weight: 600;">Taxes</span>
+                        <span style="color: var(--text); font-weight: 800;">INCLUSIVE</span>
+                    </div>
+
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem;">
+                        <h4
+                            style="font-size: 0.85rem; font-weight: 900; color: var(--text-dim); margin: 0; letter-spacing: 1.5px;">
+                            Order Total</h4>
+                        <h2
+                            style="font-size: 2.5rem; font-weight: 900; color: var(--text); line-height: 1; letter-spacing: -1.5px;">
+                            ₹{{ "{:,.0f}".format(grand_total) }}</h2>
+                    </div>
+
+                    <a href="/user/checkout" class="btn-buy-bespoke"
+                        style="display: block; width: 100%; text-align: center; text-decoration: none; padding: 1.5rem; margin-top: 4rem; border-radius: 16px; font-size: 1rem;">
+                        Proceed to Checkout
+                    </a>
+                    <div style="text-align: center; margin-top: 3rem; opacity: 0.5;">
+                        <div
+                            style="font-size: 0.65rem; font-weight: 900; color: var(--text-dim); letter-spacing: 2px; margin-bottom: 1rem;">
+                            SECURED BY ELITE VAULT™</div>
+                        <div
+                            style="display: flex; justify-content: center; gap: 1rem; font-size: 1.5rem; color: var(--text-dim);">
+                            <i class="fa-solid fa-shuttle-space"></i>
+                            <i class="fa-solid fa-id-card-clip"></i>
+                            <i class="fa-solid fa-biohazard"></i>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+            {% endif %}
+        </div>
+    </main>
+
+    <style>
+        .qty-btn {
+            width: 50px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .qty-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        @media (max-width: 1200px) {
+            .main>div {
+                grid-template-columns: 1fr !important;
+                gap: 4rem !important;
+            }
+
+            aside {
+                position: static !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main {
+                padding: 4rem 1.25rem !important;
+            }
+
+            .section-title {
+                font-size: 2.5rem !important;
+            }
+
+            .card-bespoke {
+                grid-template-columns: 1fr !important;
+                padding: 1.5rem !important;
+                gap: 1.5rem !important;
+                text-align: center;
+            }
+
+            .card-bespoke>div:first-child {
+                height: 150px !important;
+                width: 150px !important;
+                justify-self: center;
+            }
+
+            .card-bespoke>div:nth-child(3) {
+                text-align: center !important;
+                border-top: 1px solid var(--border);
+                padding-top: 1.5rem;
+            }
+
+            div[style*="display: flex; align-items: center; gap: 3rem"] {
+                justify-content: center !important;
+                flex-direction: column !important;
+                gap: 1.5rem !important;
+            }
+        }
+    </style>
+</body>
+
+</html>
+
+</html>

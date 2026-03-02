@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account - SmartCart</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="auth-wrapper animate">
+  <div class="auth-card" style="padding: 1.5rem; max-width: 900px;">
+    <div style="text-align: center; margin-bottom: 1.5rem;">
+      <h1 class="auth-title">Register Account</h1>
+      <p class="auth-subtitle">Create your account to start shopping and track your orders.</p>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="flash {{ category }}">
+      {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="/user-register">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; margin-bottom: 2.5rem;">
+        <div class="form-group-bespoke" style="margin: 0;">
+          <label>Full Name</label>
+          <input type="text" name="name" placeholder="John Doe" required>
+        </div>
+        <div class="form-group-bespoke" style="margin: 0;">
+          <label>Phone Number</label>
+          <input type="text" name="phone" placeholder="98XXXXXXXX" required>
+        </div>
+      </div>
+
+      <div class="form-group-bespoke">
+        <label>Email Address</label>
+        <input type="email" name="email" placeholder="name@example.com" required>
+      </div>
+
+      <div class="form-group-bespoke">
+        <label>Primary Address</label>
+        <textarea name="address" placeholder="Flat No, Street, Locality" required rows="2"></textarea>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; margin-bottom: 2.5rem;">
+        <div class="form-group-bespoke" style="margin: 0;">
+          <label>City</label>
+          <input type="text" name="city" placeholder="e.g. Mumbai" required>
+        </div>
+        <div class="form-group-bespoke" style="margin: 0;">
+          <label>Pincode</label>
+          <input type="text" name="pincode" placeholder="400001" required>
+        </div>
+      </div>
+
+      <div class="form-group-bespoke" style="margin-bottom: 4rem;">
+        <label>Password</label>
+        <div style="position: relative; display: flex; align-items: center;">
+          <input type="password" id="password" name="password" placeholder="••••••••" required
+            style="padding-right: 3.5rem;">
+          <i class="fa-solid fa-eye" id="togglePassword"
+            style="position: absolute; right: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--primary); opacity: 0.5; cursor: pointer; transition: var(--transition);"></i>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-buy-bespoke"
+        style="width: 100%; padding: 1.75rem; border-radius: 18px; font-size: 1.1rem;">Register</button>
+    </form>
+
+    <div style="margin-top: 4rem; text-align: center; border-top: 1px solid var(--border); padding-top: 3rem;">
+      <span style="color: var(--text-dim); font-size: 0.95rem; font-weight: 500;">Already have an account?</span>
+      <a href="/user-login"
+        style="color: var(--primary); text-decoration: none; font-weight: 900; margin-left: 0.75rem; letter-spacing: 2px; text-transform: uppercase;">Login</a>
+    </div>
+  </div>
+  <script>
+    // Show/Hide password toggle
+    const togglePassword = document.querySelector('#togglePassword');
+    const passwordInput = document.querySelector('#password');
+
+    if (togglePassword && passwordInput) {
+      togglePassword.addEventListener('click', function (e) {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+
+        this.classList.toggle('fa-eye');
+        this.classList.toggle('fa-eye-slash');
+
+        this.style.opacity = type === 'text' ? '1' : '0.5';
+      });
+    }
+  </script>
+</body>
+
+</html>

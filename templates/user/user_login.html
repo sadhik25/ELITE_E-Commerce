@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - SmartCart</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="auth-wrapper animate">
+  <div class="auth-card" style="padding: 1.5rem;">
+    <div style="text-align: center; margin-bottom: 1.5rem;">
+      <h1 class="auth-title" style="color: var(--text);">Login Page</h1>
+      <p class="auth-subtitle">Access your account to manage your orders and profile.</p>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="flash {{ category }}">
+      {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="/user-login">
+      <div class="form-group-bespoke">
+        <label>Email Address</label>
+        <div style="position: relative;">
+          <i class="fa-solid fa-at"
+            style="position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--primary); opacity: 0.5;"></i>
+          <input type="email" name="email" placeholder="name@example.com" required style="padding-left: 3.5rem;">
+        </div>
+      </div>
+
+      <div class="form-group-bespoke" style="margin-bottom: 3.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+          <label>Password</label>
+          <a href="/forgot-password?role=user"
+            style="font-size: 0.8rem; color: var(--text-dim); text-decoration: none;">Forgot
+            Password?</a>
+        </div>
+        <div style="position: relative; display: flex; align-items: center;">
+          <i class="fa-solid fa-shield-halved"
+            style="position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--primary); opacity: 0.5;"></i>
+          <input type="password" id="password" name="password" placeholder="••••••••" required
+            style="padding-left: 3.5rem; padding-right: 3.5rem;">
+          <i class="fa-solid fa-eye" id="togglePassword"
+            style="position: absolute; right: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--primary); opacity: 0.5; cursor: pointer; transition: var(--transition);"></i>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-buy-bespoke"
+        style="width: 100%; padding: 1.5rem; border-radius: 16px;">Login</button>
+    </form>
+
+    <div style="margin-top: 4rem; text-align: center; border-top: 1px solid var(--border); padding-top: 2.5rem;">
+      <span style="color: var(--text-dim); font-size: 0.9rem; font-weight: 500;">New user?</span>
+      <a href="/user-register"
+        style="color: var(--primary); text-decoration: none; font-weight: 900; margin-left: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; font-size: 0.8rem;">Register</a>
+      <div style="margin-top: 2rem;">
+        <a href="/"
+          style="color: var(--text-dim); text-decoration: none; font-weight: 700; font-size: 0.8rem; letter-spacing: 1px; border-bottom: 1.5px solid transparent; transition: var(--transition);"
+          onmouseover="this.style.borderBottomColor='var(--text-dim)'"
+          onmouseout="this.style.borderBottomColor='transparent'">&larr; Return to Home</a>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Show/Hide password toggle
+    const togglePassword = document.querySelector('#togglePassword');
+    const passwordInput = document.querySelector('#password');
+
+    togglePassword.addEventListener('click', function (e) {
+      // toggle the type attribute
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+
+      // toggle the eye / eye slash icon
+      this.classList.toggle('fa-eye');
+      this.classList.toggle('fa-eye-slash');
+
+      // Subtle feedback
+      this.style.opacity = type === 'text' ? '1' : '0.5';
+    });
+
+    // Auto-dismiss flash messages
+    setTimeout(() => {
+      const flashes = document.querySelectorAll('.flash');
+      flashes.forEach(f => {
+        f.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        f.style.opacity = '0';
+        f.style.transform = 'translateY(-20px)';
+        setTimeout(() => f.remove(), 600);
+      });
+    }, 4000);
+  </script>
+</body>
+
+</html>

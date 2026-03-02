@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Management - SmartCart</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="page animate">
+    <nav class="topbar">
+        <a href="/admin-dashboard" class="topbar-brand">ELITE<span>CART</span></a>
+        <div class="topbar-nav">
+            <a href="/admin/item-list">Inventory</a>
+            <a href="/admin/add-item">Add Item</a>
+            <a href="/admin-logout" style="color: var(--danger); opacity: 0.8;">Logout</a>
+        </div>
+    </nav>
+
+    <main class="main">
+        <div class="section-head" style="margin-bottom: 3rem; text-align: center;">
+            <div
+                style="font-weight: 800; letter-spacing: 6px; font-size: 0.75rem; color: var(--primary); margin-bottom: 1rem; text-transform: uppercase;">
+                Personnel Management</div>
+            <h1 class="section-title" style="font-size: 3rem; margin: 0; letter-spacing: -2px; color: var(--text);">
+                Manage
+                Admins</h1>
+            <p style="color: var(--text-dim); margin-top: 1rem; font-size: 0.95rem; font-weight: 600;">Control account
+                access for administrators.</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+        <div class="flash {{ category }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endwith %}
+
+        <div class="card-bespoke"
+            style="max-width: 100%; padding: 0; overflow: hidden; border: 1px solid var(--border);">
+            <div style="overflow-x: auto;" class="custom-scroll">
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead>
+                        <tr style="background: var(--surface-2); border-bottom: 2px solid var(--border);">
+                            <th
+                                style="padding: 1.5rem 2.5rem; color: var(--text-dim); text-transform: uppercase; font-size: 0.65rem; font-weight: 800; letter-spacing: 2px;">
+                                NAME</th>
+                            <th
+                                style="padding: 1.5rem 2.5rem; color: var(--text-dim); text-transform: uppercase; font-size: 0.65rem; font-weight: 800; letter-spacing: 2px;">
+                                EMAIL</th>
+                            <th
+                                style="padding: 1.5rem 2.5rem; color: var(--text-dim); text-transform: uppercase; font-size: 0.65rem; font-weight: 800; letter-spacing: 2px;">
+                                STATUS</th>
+                            <th
+                                style="padding: 1.5rem 2.5rem; color: var(--text-dim); text-transform: uppercase; font-size: 0.65rem; font-weight: 800; letter-spacing: 2px; text-align: right;">
+                                ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody style="color: var(--text);">
+                        {% for adm in admins %}
+                        <tr class="table-row-bespoke"
+                            style="border-bottom: 1px solid var(--border); transition: var(--transition);">
+                            <td style="padding: 1.5rem 2.5rem;">
+                                <div style="display: flex; align-items: center; gap: 1.5rem;">
+                                    <div
+                                        style="width: 45px; height: 45px; background: var(--surface-2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; border: 1px solid var(--border);">
+                                        👤
+                                    </div>
+                                    <span
+                                        style="font-weight: 800; color: var(--text); font-size: 1rem; letter-spacing: -0.5px;">{{
+                                        adm.name }}</span>
+                                </div>
+                            </td>
+                            <td
+                                style="padding: 1.5rem 2.5rem; color: var(--text-dim); font-size: 0.9rem; font-family: monospace;">
+                                {{ adm.email }}</td>
+                            <td style="padding: 1.5rem 2.5rem;">
+                                {% if adm.is_approved %}
+                                <span class="badge approved">AUTHENTICATED</span>
+                                {% else %}
+                                <span class="badge pending">UNVERIFIED</span>
+                                {% endif %}
+                            </td>
+                            <td style="padding: 1.5rem 2.5rem; text-align: right;">
+                                <div
+                                    style="display: flex; gap: 1.25rem; justify-content: flex-end; align-items: center;">
+                                    {% if not adm.is_approved %}
+                                    <a href="/admin/approve/{{ adm.admin_id }}" class="op-link approve">APPROVE</a>
+                                    {% endif %}
+                                    <a href="/admin/delete-admin/{{ adm.admin_id }}" class="op-link revoke"
+                                        onclick="return confirm('DECOMMISSION ADMINISTRATOR CREDENTIALS?')">REVOKE</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% if not admins %}
+                        <tr>
+                            <td colspan="4" style="padding: 8rem 2rem; text-align: center; color: var(--text-dim);">
+                                <div style="font-size: 4rem; opacity: 0.2; margin-bottom: 2rem;">🛡️</div>
+                                <h3
+                                    style="font-size: 1.25rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text);">
+                                    Manifest Pristine</h3>
+                                <p style="font-size: 0.9rem; letter-spacing: 0.5px;">No additional authorities currently
+                                    recorded.</p>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div style="margin-top: 5rem; text-align: center;">
+            <a href="/admin-dashboard" class="btn-buy-bespoke secondary"
+                style="display: inline-flex; text-decoration: none; padding: 1.25rem 3rem; border-radius: 14px; align-items: center; gap: 1rem; border-style: dashed;">
+                <i class="fa-solid fa-arrow-left"></i> RETURN TO COMMAND CENTER
+            </a>
+        </div>
+    </main>
+
+    <style>
+        .table-row-bespoke:hover {
+            background: rgba(255, 255, 255, 0.02);
+            box-shadow: inset 4px 0 0 var(--primary);
+        }
+
+        .badge {
+            font-size: 0.65rem;
+            font-weight: 900;
+            padding: 0.5rem 1.25rem;
+            border-radius: 99px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .badge.approved {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .badge.pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .op-link {
+            text-decoration: none;
+            font-size: 0.7rem;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            padding: 0.6rem 0;
+            transition: var(--transition);
+        }
+
+        .op-link.approve {
+            color: var(--primary);
+        }
+
+        .op-link.approve:hover {
+            color: var(--primary-light);
+            text-decoration: underline;
+        }
+
+        .op-link.revoke {
+            color: var(--text-dim);
+        }
+
+        .op-link.revoke:hover {
+            color: var(--danger);
+            text-decoration: underline;
+        }
+
+        .custom-scroll::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 99px;
+        }
+    </style>
+</body>
+
+</html>
+
+</html>
