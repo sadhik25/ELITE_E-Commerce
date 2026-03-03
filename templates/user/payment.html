@@ -43,43 +43,43 @@
     </style>
 </head>
 
-<body class="auth-wrapper animate">
-    <div class="auth-card" style="text-align: center; padding: 4rem 3rem;">
-        <div style="margin-bottom: 3.5rem;">
-            <h1 style="font-size: 2.2rem; margin: 0; letter-spacing: -1.5px; color: var(--text); font-weight: 800;">
-                Complete Payment</h1>
-            <p style="color: var(--text-dim); margin-top: 0.75rem; font-size: 0.9rem; font-weight: 500;">Secure Checkout
-            </p>
-        </div>
-
-        <div
-            style="background: var(--surface-2); padding: 2.5rem; border-radius: 20px; margin-bottom: 3rem; border: 1px solid var(--border);">
-            <p
-                style="font-size: 0.65rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.5rem;">
-                Amount Due</p>
-            <h2 style="font-size: 3rem; font-weight: 900; color: var(--text); margin: 0; letter-spacing: -1px;">
-                ₹{{ "{:,.2f}".format(amount / 100) }}</h2>
-        </div>
-
-        <div style="text-align: left; margin-bottom: 3rem;">
-            <div
-                style="display: flex; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem;">
-                <span style="color: var(--text-dim); font-size: 0.85rem; font-weight: 600;">Reference ID</span>
-                <span style="color: var(--text); font-family: monospace; font-weight: 700; font-size: 0.85rem;">{{
-                    order.id }}</span>
+<body>
+    <div class="payment-wrapper">
+        <div class="auth-card animate" style="text-align: center; padding: 4rem 3rem;">
+            <div style="margin-bottom: 3.5rem;">
+                <h1 style="font-size: 2.2rem; margin: 0; letter-spacing: -1.5px; color: var(--text); font-weight: 800;">
+                    Complete Payment</h1>
+                <p style="color: var(--text-dim); margin-top: 0.75rem; font-size: 0.9rem; font-weight: 500;">Secure Checkout</p>
             </div>
-        </div>
 
-        <button id="rzp-button1" class="btn-buy-bespoke"
-            style="width: 100%; padding: 1.25rem; font-size: 1.1rem; border-radius: 16px;">
-            Pay Now
-        </button>
+            <div style="background: var(--surface-2); padding: 2.5rem; border-radius: 20px; margin-bottom: 3rem; border: 1px solid var(--border); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
+                <p style="font-size: 0.65rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.5rem;">
+                    Amount Due</p>
+                <h2 style="font-size: 3.5rem; font-weight: 900; color: var(--primary); margin: 0; letter-spacing: -1.5px;">
+                    ₹{{ "{:,.2f}".format(amount / 100) }}</h2>
+            </div>
 
-        <div style="margin-top: 3.5rem; text-align: center; border-top: 1px solid var(--border); padding-top: 2rem;">
-            <a href="/user/cart"
-                style="color: var(--text-dim); text-decoration: none; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.5px;">
-                &larr; Cancel and Return
-            </a>
+            <div style="text-align: left; margin-bottom: 3.5rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 1.25rem; border-bottom: 1.5px solid var(--border); padding-bottom: 1rem;">
+                    <span style="color: var(--text-dim); font-size: 0.85rem; font-weight: 700;">Reference ID</span>
+                    <span style="color: var(--text); font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 0.9rem;">{{ order.id }}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; border-bottom: 1.5px solid var(--border); padding-bottom: 1rem;">
+                    <span style="color: var(--text-dim); font-size: 0.85rem; font-weight: 700;">Customer</span>
+                    <span style="color: var(--text); font-weight: 800; font-size: 0.9rem;">{{ user_name }}</span>
+                </div>
+            </div>
+
+            <button id="rzp-button1" class="btn-buy-bespoke"
+                style="width: 100%; padding: 1.5rem; font-size: 1.1rem; border-radius: 18px; box-shadow: 0 20px 40px var(--primary-glow);">
+                <i class="fa-solid fa-shield-check" style="margin-right: 10px;"></i> PAY NOW
+            </button>
+
+            <div style="margin-top: 4rem; text-align: center; border-top: 1.5px solid var(--border); padding-top: 2.5rem;">
+                <a href="/user/cart" style="color: var(--text-dim); text-decoration: none; font-size: 0.85rem; font-weight: 800; letter-spacing: 0.5px; transition: var(--transition);" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-dim)'">
+                    &larr; CANCEL AND RETURN
+                </a>
+            </div>
         </div>
     </div>
 

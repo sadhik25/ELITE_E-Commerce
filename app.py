@@ -998,7 +998,7 @@ def add_to_cart(product_id):
 
     session['cart'] = cart
 
-    flash("Item added to cart!", "success")
+    flash("Item added to cart successfully!", "success")
     return redirect(request.referrer)   # Return to same page
 
 
@@ -1263,10 +1263,18 @@ Attached is your invoice for reference.
 Payment ID: {payment_id}
 
 Thank you for shopping with Elite Cart!"""
+                
+                # Make sure buffer is at position 0
+                pdf_buffer.seek(0)
                 msg.attach(filename, "application/pdf", pdf_buffer.read())
                 mail.send(msg)
+                print(f"Confirmation email sent to {session['user_email']}")
+            else:
+                print("Failed to generate PDF buffer for email.")
         except Exception as e:
-            print(f"Error sending email: {e}")
+            print(f"CRITICAL Error sending email: {e}")
+            import traceback
+            traceback.print_exc()
 
         # Clear the cart
         session.pop('cart', None)
@@ -1500,24 +1508,31 @@ def generate_invoice_pdf_data(order_id, user_id):
         JOIN users u ON o.user_id = u.user_id 
         WHERE o.order_id = ? AND o.user_id = ?
     """, (order_id, user_id))
-    order = cursor.fetchone()
-    if not order:
+    order_row = cursor.fetchone()
+    if not order_row:
+        cursor.close()
+        conn.close()
         return None, None
+    
+    order = dict(order_row)
+    
     cursor.execute("""
         SELECT oi.*, p.name as product_name, p.price 
         FROM order_items_table oi 
         JOIN products p ON oi.product_id = p.product_id 
         WHERE oi.order_id = ?
     """, (order_id,))
-    items = cursor.fetchall()
+    items_rows = cursor.fetchall()
+    items = [dict(i) for i in items_rows]
+    
     cursor.close()
     conn.close()
 
     pdf = FPDF()
     pdf.add_page()
-    pdf.set_font("Arial", 'B', 20)
+    pdf.set_font("helvetica", 'B', 20)
     pdf.cell(200, 15, "Elite Cart Invoice", ln=True, align='C')
-    pdf.set_font("Arial", size=12)
+    pdf.set_font("helvetica", size=12)
     pdf.ln(10)
     pdf.cell(100, 10, f"Order ID: {order['order_id']}")
     pdf.cell(100, 10, f"Date: {order['order_date']}", ln=True, align='R')
@@ -1527,38 +1542,40 @@ def generate_invoice_pdf_data(order_id, user_id):
     pdf.ln(5)
     pdf.cell(100, 10, f"Payment ID: {order['payment_id']}")
     pdf.ln(10)
-    pdf.set_font("Arial", 'B', 10)
+    pdf.set_font("helvetica", 'B', 10)
     pdf.cell(200, 8, "Shipping Address:", ln=True)
-    pdf.set_font("Arial", size=10)
+    pdf.set_font("helvetica", size=10)
     pdf.cell(200, 6, f"{order.get('address', 'N/A')}", ln=True)
     pdf.cell(200, 6, f"{order.get('city', 'N/A')} - {order.get('pincode', 'N/A')}", ln=True)
     pdf.cell(200, 6, f"Phone: {order.get('phone', 'N/A')}", ln=True)
     pdf.ln(10)
     pdf.set_fill_color(26, 86, 219)
     pdf.set_text_color(255, 255, 255)
-    pdf.set_font("Arial", 'B', 12)
+    pdf.set_font("helvetica", 'B', 12)
     pdf.cell(100, 10, " Product", 1, 0, 'L', True)
     pdf.cell(30, 10, " Qty", 1, 0, 'C', True)
     pdf.cell(30, 10, " Price", 1, 0, 'C', True)
     pdf.cell(30, 10, " Total", 1, 1, 'C', True)
     pdf.set_text_color(0, 0, 0)
-    pdf.set_font("Arial", '', 11)
+    pdf.set_font("helvetica", '', 11)
     for item in items:
         pdf.cell(100, 10, f" {item['product_name']}", 1)
         pdf.cell(30, 10, f" {item['quantity']}", 1, 0, 'C')
         pdf.cell(30, 10, f" INR {item['price']}", 1, 0, 'C')
         pdf.cell(30, 10, f" INR {item['price'] * item['quantity']}", 1, 1, 'C')
     pdf.ln(5)
-    pdf.set_font("Arial", 'B', 14)
-    pdf.cell(190, 12, f"Grand Total: INR {order['amount']}", 0, 1, 'R')
+    pdf.set_font("helvetica", 'B', 14)
+    pdf.cell(190, 12, f"Grand Total: INR {order['amount']:.2f}", 0, 1, 'R')
     pdf.ln(10)
-    pdf.set_font("Arial", 'I', 10)
+    pdf.set_font("helvetica", 'I', 10)
     pdf.cell(200, 10, "Thank you for shopping with Elite Cart!", 0, 0, 'C')
     output = io.BytesIO()
     pdf_content = pdf.output(dest='S')
     if isinstance(pdf_content, str):
-        output.write(pdf_content.encode('latin-1'))
+        # fpdf versions that return string (often latin-1 encoded)
+        output.write(pdf_content.encode('latin-1', 'replace'))
     else:
+        # fpdf2 versions that return bytes/bytearray
         output.write(pdf_content)
     output.seek(0)
     return output, f"Elite_Cart_Invoice_{order_id}.pdf"

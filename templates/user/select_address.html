@@ -8,214 +8,220 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
-<body class="auth-wrapper animate">
-    <div class="auth-card" style="max-width: 800px; padding: 3rem;">
-        <div style="margin-bottom: 4rem; text-align: center;">
-            <span
-                style="font-size: 0.75rem; font-weight: 800; color: var(--primary); letter-spacing: 6px; text-transform: uppercase;">Step
-                1: Shipping</span>
-            <h1
-                style="font-size: 3rem; margin: 0.5rem 0 0; letter-spacing: -2px; color: var(--text); font-weight: 900;">
-                Select Address</h1>
-            <p
-                style="color: var(--text-dim); font-size: 1rem; max-width: 500px; margin: 1rem auto 0; font-weight: 500; line-height: 1.6;">
-                Choose where you would like your order to be delivered.</p>
-        </div>
+<body>
+    <div class="auth-wrapper">
+        <div class="auth-card animate" style="max-width: 800px; padding: 3rem;">
+            <div style="margin-bottom: 4rem; text-align: center;">
+                <span
+                    style="font-size: 0.75rem; font-weight: 800; color: var(--primary); letter-spacing: 6px; text-transform: uppercase;">Step
+                    1: Shipping</span>
+                <h1
+                    style="font-size: 3rem; margin: 0.5rem 0 0; letter-spacing: -2px; color: var(--text); font-weight: 900;">
+                    Select Address</h1>
+                <p
+                    style="color: var(--text-dim); font-size: 1rem; max-width: 500px; margin: 1rem auto 0; font-weight: 500; line-height: 1.6;">
+                    Choose where you would like your order to be delivered.</p>
+            </div>
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        {% for category, message in messages %}
-        <div class="flash {{ category }}">
-            {{ message }}
-        </div>
-        {% endfor %}
-        {% endif %}
-        {% endwith %}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="flash {{ category }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
 
-        <form method="POST" action="/user/checkout" style="margin-bottom: 5rem;">
-            <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 4rem;">
-                {% for addr in addresses %}
-                <label class="address-node {{ 'active' if addr.is_default or loop.first }}">
-                    <div class="node-radio">
-                        <input type="radio" name="address_id" value="{{ addr.address_id }}" {{ 'checked' if
-                            addr.is_default or loop.first }}>
-                        <div class="radio-visual"></div>
-                    </div>
-
-                    <div style="flex: 1;">
-                        <div
-                            style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
-                            <h3
-                                style="font-size: 1.25rem; font-weight: 900; color: var(--text); margin: 0; letter-spacing: -0.5px;">
-                                {{ addr.address_line }}</h3>
-                            {% if addr.is_default %}
-                            <span
-                                style="background: var(--primary); color: white; font-size: 0.6rem; font-weight: 900; padding: 0.35rem 0.75rem; border-radius: 99px; letter-spacing: 1px;">PRIMARY</span>
-                            {% endif %}
+            <form method="POST" action="/user/checkout" style="margin-bottom: 5rem;">
+                <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 4rem;">
+                    {% for addr in addresses %}
+                    <label class="address-node {{ 'active' if addr.is_default or loop.first }}">
+                        <div class="node-radio">
+                            <input type="radio" name="address_id" value="{{ addr.address_id }}" {{ 'checked' if
+                                addr.is_default or loop.first }}>
+                            <div class="radio-visual"></div>
                         </div>
-                        <p style="color: var(--text-dim); font-size: 0.9rem; font-weight: 500;">{{ addr.city }}, {{
-                            addr.pincode }}</p>
-                        <p style="color: var(--text-dim); font-size: 0.9rem; margin-top: 0.25rem; font-weight: 500;">
-                            Phone: {{ addr.phone }}</p>
-                    </div>
-                </label>
-                {% endfor %}
 
-                {% if not addresses %}
-                <div class="card-bespoke"
-                    style="padding: 4rem 2rem; text-align: center; border-style: dashed; background: transparent;">
-                    <p style="color: var(--text-dim); font-size: 1rem; margin-bottom: 2rem;">No saved addresses found.
-                    </p>
-                    <a href="/user/profile" class="btn-buy-bespoke secondary"
-                        style="display: inline-block; text-decoration: none; padding: 1.25rem 4rem; border-radius: 12px; border-style: dashed;">Add
-                        to Profile</a>
+                        <div style="flex: 1;">
+                            <div
+                                style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <h3
+                                    style="font-size: 1.25rem; font-weight: 900; color: var(--text); margin: 0; letter-spacing: -0.5px;">
+                                    {{ addr.address_line }}</h3>
+                                {% if addr.is_default %}
+                                <span
+                                    style="background: var(--primary); color: white; font-size: 0.6rem; font-weight: 900; padding: 0.35rem 0.75rem; border-radius: 99px; letter-spacing: 1px;">PRIMARY</span>
+                                {% endif %}
+                            </div>
+                            <p style="color: var(--text-dim); font-size: 0.9rem; font-weight: 500;">{{ addr.city }}, {{
+                                addr.pincode }}</p>
+                            <p
+                                style="color: var(--text-dim); font-size: 0.9rem; margin-top: 0.25rem; font-weight: 500;">
+                                Phone: {{ addr.phone }}</p>
+                        </div>
+                    </label>
+                    {% endfor %}
+
+                    {% if not addresses %}
+                    <div class="card-bespoke"
+                        style="padding: 4rem 2rem; text-align: center; border-style: dashed; background: transparent;">
+                        <p style="color: var(--text-dim); font-size: 1rem; margin-bottom: 2rem;">No saved addresses
+                            found.
+                        </p>
+                        <a href="/user/profile" class="btn-buy-bespoke secondary"
+                            style="display: inline-block; text-decoration: none; padding: 1.25rem 4rem; border-radius: 12px; border-style: dashed;">Add
+                            to Profile</a>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% if addresses %}
+                <div style="text-align: center;">
+                    <button type="submit" class="btn-buy-bespoke"
+                        style="width: 100%; padding: 1.5rem; font-size: 1.1rem; border-radius: 16px;">
+                        Proceed to Payment — ₹{{ "{:,.0f}".format(grand_total) }}
+                    </button>
                 </div>
                 {% endif %}
-            </div>
-
-            {% if addresses %}
-            <div style="text-align: center;">
-                <button type="submit" class="btn-buy-bespoke"
-                    style="width: 100%; padding: 1.5rem; font-size: 1.1rem; border-radius: 16px;">
-                    Proceed to Payment — ₹{{ "{:,.0f}".format(grand_total) }}
-                </button>
-            </div>
-            {% endif %}
-        </form>
-
-        <div style="padding: 3rem; background: var(--surface-2); border-radius: 24px; border: 1px solid var(--border);">
-            <h3
-                style="font-size: 0.75rem; font-weight: 900; color: var(--primary); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 2.5rem; display: flex; align-items: center; gap: 1rem;">
-                <span style="width: 20px; height: 1.5px; background: var(--primary);"></span>
-                Add New Address
-            </h3>
-            <form action="/user/add-address" method="POST">
-                <input type="hidden" name="next" value="/user/checkout">
-                <div class="form-group-bespoke">
-                    <label>Address Details</label>
-                    <textarea name="address_line" placeholder="Flat/House No, Street, Area" required rows="2"
-                        style="background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1rem 1.25rem; width: 100%; color: var(--text); font-weight: 600; outline: none;"></textarea>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem;">
-                    <div class="form-group-bespoke">
-                        <label>City</label>
-                        <input type="text" name="city" placeholder="City" required
-                            style="background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1rem 1.25rem; width: 100%; color: var(--text); font-weight: 600; outline: none;">
-                    </div>
-                    <div class="form-group-bespoke">
-                        <label>Pincode</label>
-                        <input type="text" name="pincode" placeholder="6-digit Pincode" required
-                            style="background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1rem 1.25rem; width: 100%; color: var(--text); font-weight: 600; outline: none;">
-                    </div>
-                </div>
-                <div class="form-group-bespoke" style="margin-top: 1.5rem; margin-bottom: 2.5rem;">
-                    <label>Mobile Number</label>
-                    <input type="text" name="phone" placeholder="10-digit number" required
-                        style="background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1rem 1.25rem; width: 100%; color: var(--text); font-weight: 600; outline: none;">
-                </div>
-                <button type="submit" class="btn-buy-bespoke secondary"
-                    style="width: 100%; border-style: dashed; padding: 1.5rem; border-radius: 16px;">Save and Use
-                    Address</button>
             </form>
-        </div>
 
-        <div style="margin-top: 3rem; text-align: center; border-top: 1px solid var(--border); padding-top: 2rem;">
-            <a href="/user/cart"
-                style="color: var(--text-dim); text-decoration: none; font-weight: 700; font-size: 0.8rem; letter-spacing: 1px;">&larr;
-                Back to Cart</a>
-        </div>
-        <style>
-            .address-node {
-                padding: 2rem;
-                cursor: pointer;
-                display: flex;
-                align-items: flex-start;
-                gap: 1.5rem;
-                transition: var(--transition);
-                border: 1.5px solid var(--border) !important;
-                border-radius: 24px !important;
-                background: var(--surface-2);
-                margin-bottom: 1rem;
-            }
+            <div
+                style="padding: 3rem; background: var(--surface-2); border-radius: 24px; border: 1px solid var(--border);">
+                <h3
+                    style="font-size: 0.75rem; font-weight: 900; color: var(--primary); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 2.5rem; display: flex; align-items: center; gap: 1rem;">
+                    <span style="width: 20px; height: 1.5px; background: var(--primary);"></span>
+                    Add New Address
+                </h3>
+                <form action="/user/add-address" method="POST">
+                    <input type="hidden" name="next" value="/user/checkout">
+                    <div class="form-group-bespoke">
+                        <label>Address Details</label>
+                        <textarea name="address_line" placeholder="Flat/House No, Street, Area" required rows="2"
+                            style="background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1rem 1.25rem; width: 100%; color: var(--text); font-weight: 600; outline: none;"></textarea>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem;">
+                        <div class="form-group-bespoke">
+                            <label>City</label>
+                            <input type="text" name="city" placeholder="City" required
+                                style="background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1rem 1.25rem; width: 100%; color: var(--text); font-weight: 600; outline: none;">
+                        </div>
+                        <div class="form-group-bespoke">
+                            <label>Pincode</label>
+                            <input type="text" name="pincode" placeholder="6-digit Pincode" required
+                                style="background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1rem 1.25rem; width: 100%; color: var(--text); font-weight: 600; outline: none;">
+                        </div>
+                    </div>
+                    <div class="form-group-bespoke" style="margin-top: 1.5rem; margin-bottom: 2.5rem;">
+                        <label>Mobile Number</label>
+                        <input type="text" name="phone" placeholder="10-digit number" required
+                            style="background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1rem 1.25rem; width: 100%; color: var(--text); font-weight: 600; outline: none;">
+                    </div>
+                    <button type="submit" class="btn-buy-bespoke secondary"
+                        style="width: 100%; border-style: dashed; padding: 1.5rem; border-radius: 16px;">Save and Use
+                        Address</button>
+                </form>
+            </div>
 
-            .address-node:hover {
-                border-color: var(--primary) !important;
-                background: var(--surface);
-            }
-
-            .address-node.active {
-                border-color: var(--primary) !important;
-                background: #fffafa;
-            }
-
-            .node-radio {
-                position: relative;
-                width: 20px;
-                height: 20px;
-                margin-top: 0.25rem;
-            }
-
-            .node-radio input {
-                position: absolute;
-                opacity: 0;
-                cursor: pointer;
-            }
-
-            .radio-visual {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 20px;
-                height: 20px;
-                background: var(--surface);
-                border: 2px solid var(--border);
-                border-radius: 50%;
-                transition: var(--transition);
-            }
-
-            .node-radio input:checked~.radio-visual {
-                border-color: var(--primary);
-                background: var(--primary);
-            }
-
-            .radio-visual::after {
-                content: "";
-                position: absolute;
-                display: none;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                width: 8px;
-                height: 8px;
-                border-radius: 50%;
-                background: white;
-            }
-
-            .node-radio input:checked~.radio-visual::after {
-                display: block;
-            }
-
-            .form-group-bespoke label {
-                font-size: 0.65rem;
-                font-weight: 900;
-                color: var(--text-dim);
-                text-transform: uppercase;
-                letter-spacing: 1.5px;
-                display: block;
-                margin-bottom: 0.75rem;
-            }
-
-            @media (max-width: 600px) {
-                .auth-card {
-                    padding: 1.5rem !important;
+            <div style="margin-top: 3rem; text-align: center; border-top: 1px solid var(--border); padding-top: 2rem;">
+                <a href="/user/cart"
+                    style="color: var(--text-dim); text-decoration: none; font-weight: 700; font-size: 0.8rem; letter-spacing: 1px;">&larr;
+                    Back to Cart</a>
+            </div>
+            <style>
+                .address-node {
+                    padding: 2rem;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: flex-start;
+                    gap: 1.5rem;
+                    transition: var(--transition);
+                    border: 1.5px solid var(--border) !important;
+                    border-radius: 24px !important;
+                    background: var(--surface-2);
+                    margin-bottom: 1rem;
                 }
 
-                div[style*="grid-template-columns: 1fr 1fr"] {
-                    grid-template-columns: 1fr !important;
-                    gap: 1.5rem !important;
+                .address-node:hover {
+                    border-color: var(--primary) !important;
+                    background: var(--surface);
                 }
-            }
-        </style>
+
+                .address-node.active {
+                    border-color: var(--primary) !important;
+                    background: #fffafa;
+                }
+
+                .node-radio {
+                    position: relative;
+                    width: 20px;
+                    height: 20px;
+                    margin-top: 0.25rem;
+                }
+
+                .node-radio input {
+                    position: absolute;
+                    opacity: 0;
+                    cursor: pointer;
+                }
+
+                .radio-visual {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 20px;
+                    height: 20px;
+                    background: var(--surface);
+                    border: 2px solid var(--border);
+                    border-radius: 50%;
+                    transition: var(--transition);
+                }
+
+                .node-radio input:checked~.radio-visual {
+                    border-color: var(--primary);
+                    background: var(--primary);
+                }
+
+                .radio-visual::after {
+                    content: "";
+                    position: absolute;
+                    display: none;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    width: 8px;
+                    height: 8px;
+                    border-radius: 50%;
+                    background: white;
+                }
+
+                .node-radio input:checked~.radio-visual::after {
+                    display: block;
+                }
+
+                .form-group-bespoke label {
+                    font-size: 0.65rem;
+                    font-weight: 900;
+                    color: var(--text-dim);
+                    text-transform: uppercase;
+                    letter-spacing: 1.5px;
+                    display: block;
+                    margin-bottom: 0.75rem;
+                }
+
+                @media (max-width: 600px) {
+                    .auth-card {
+                        padding: 1.5rem !important;
+                    }
+
+                    div[style*="grid-template-columns: 1fr 1fr"] {
+                        grid-template-columns: 1fr !important;
+                        gap: 1.5rem !important;
+                    }
+                }
+            </style>
+        </div>
+    </div>
 </body>
 
 </html>

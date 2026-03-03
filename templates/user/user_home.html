@@ -152,7 +152,8 @@
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <span style="font-size: 1.5rem; font-weight: 900; color: var(--text); letter-spacing: -1px;">₹{{
                   "{:,.0f}".format(prod.price) }}</span>
-                <a href="/user/buy-now/{{ prod.product_id }}" class="card-add-btn" onclick="event.stopPropagation();">
+                <a href="/user/add-to-cart/{{ prod.product_id }}" class="card-add-btn"
+                  onclick="event.stopPropagation();">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                     <path d="M12 5v14M5 12h14"></path>
                   </svg>
