@@ -123,7 +123,7 @@
               {% if prod.is_bestseller %}
               <div class="bestseller-tag">★ Bestseller</div>
               {% endif %}
-              <img src="/static/uploads/product_images/{{ prod.image }}" alt="{{ prod.name }}">
+              <img src="{{ url_for('static', filename='uploads/product_images/' + prod.image) }}" alt="{{ prod.name }}">
               <div class="card-overlay">
                 <span class="overlay-text">View Product</span>
               </div>

@@ -34,26 +34,27 @@
             <div style="position: sticky; top: 10rem;">
                 <div class="card-bespoke"
                     style="padding: 4rem; background: white; margin-bottom: 3rem; height: 650px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid var(--border); border-radius: 40px; box-shadow: 0 50px 100px rgba(0,0,0,0.5);">
-                    <img id="main-product-img" src="/static/uploads/product_images/{{ product.image }}"
+                    <img id="main-product-img"
+                        src="{{ url_for('static', filename='uploads/product_images/' + product.image) }}"
                         alt="{{ product.name }}"
                         style="max-width: 100%; max-height: 100%; object-fit: contain; transition: var(--transition);">
                 </div>
 
                 <div style="display: flex; gap: 1.5rem; justify-content: center;">
                     <div class="thumb-bespoke active"
-                        onclick="changeMainImage(this, '/static/uploads/product_images/{{ product.image }}')">
-                        <img src="/static/uploads/product_images/{{ product.image }}">
+                        onclick="changeMainImage(this, '{{ url_for('static', filename='uploads/product_images/' + product.image) }}')">
+                        <img src="{{ url_for('static', filename='uploads/product_images/' + product.image) }}">
                     </div>
                     {% if product.image2 %}
                     <div class="thumb-bespoke"
-                        onclick="changeMainImage(this, '/static/uploads/product_images/{{ product.image2 }}')">
-                        <img src="/static/uploads/product_images/{{ product.image2 }}">
+                        onclick="changeMainImage(this, '{{ url_for('static', filename='uploads/product_images/' + product.image2) }}')">
+                        <img src="{{ url_for('static', filename='uploads/product_images/' + product.image2) }}">
                     </div>
                     {% endif %}
                     {% if product.image3 %}
                     <div class="thumb-bespoke"
-                        onclick="changeMainImage(this, '/static/uploads/product_images/{{ product.image3 }}')">
-                        <img src="/static/uploads/product_images/{{ product.image3 }}">
+                        onclick="changeMainImage(this, '{{ url_for('static', filename='uploads/product_images/' + product.image3) }}')">
+                        <img src="{{ url_for('static', filename='uploads/product_images/' + product.image3) }}">
                     </div>
                     {% endif %}
                 </div>
